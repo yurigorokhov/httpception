@@ -25,12 +25,21 @@ type Command struct {
 type UpdateType uint
 
 const (
-	NewRequestUpdate        UpdateType = iota
-	NewResponseUpdate                  = iota
-	DebuggingEnabledUpdate             = iota
-	DebuggingDisabledUpdate            = iota
+
+	// NewRequestUpdate sends a new request to the client
+	NewRequestUpdate UpdateType = iota
+
+	// NewResponseUpdate sends a new request to the client
+	NewResponseUpdate = iota
+
+	// DebuggingEnabledUpdate tells the client that debugging was turned on
+	DebuggingEnabledUpdate = iota
+
+	// DebuggingDisabledUpdate tells the client that debugging was turned off
+	DebuggingDisabledUpdate = iota
 )
 
+// Update represents an update message to the client
 type Update struct {
 	Type  UpdateType
 	Value string

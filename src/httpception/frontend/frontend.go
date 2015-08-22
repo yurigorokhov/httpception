@@ -1,6 +1,7 @@
 package frontend
 
 import (
+	"fmt"
 	"net/http"
 	"net/http/httputil"
 	"sync"
@@ -8,15 +9,18 @@ import (
 	"golang.org/x/net/websocket"
 )
 
+// Frontend represents a debugging iterface
 type Frontend interface {
 	InterceptRequest(*http.Request) *http.Request
 	InterceptResponse(*http.Response) *http.Response
 	Start()
 }
 
+// WebSocketFrontend represents the main web interface
 type WebSocketFrontend struct {
-	updateChan  chan Update
-	commandChan chan Command
+	updateChan       chan Update
+	commandChan      chan Command
+	debuggingAddress string
 
 	settingsMutex    *sync.Mutex
 	debuggingEnabled bool
@@ -24,16 +28,22 @@ type WebSocketFrontend struct {
 	continueChannel  chan struct{}
 }
 
-func NewWebSocketFrontEnd(updateChan chan Update, commandChan chan Command) *WebSocketFrontend {
+// NewWebSocketFrontend creates a new WebSocketFrontend
+func NewWebSocketFrontend(
+	updateChan chan Update,
+	commandChan chan Command,
+	debuggingAddress string) *WebSocketFrontend {
 	return &WebSocketFrontend{
 		updateChan:       updateChan,
 		commandChan:      commandChan,
+		debuggingAddress: debuggingAddress,
 		debuggingEnabled: false,
 		settingsMutex:    &sync.Mutex{},
 		continueChannel:  make(chan struct{}),
 	}
 }
 
+// Start starts up the frontend
 func (f *WebSocketFrontend) Start() {
 
 	// handle
@@ -75,12 +85,13 @@ func (f *WebSocketFrontend) Start() {
 
 	// handle websocket connections
 	http.Handle("/_socket", websocket.Handler(socketHandler.HandleConn))
-	http.Handle("/", http.FileServer(http.Dir("./")))
-	http.ListenAndServe(":8081", nil)
+	http.Handle("/", http.FileServer(http.Dir("./src/httpception/frontend/web/")))
+	fmt.Printf("Listening on: %s\n", f.debuggingAddress)
+	http.ListenAndServe(f.debuggingAddress, nil)
 }
 
+// InterceptRequest allows the debugger to view and modify the request
 func (f *WebSocketFrontend) InterceptRequest(request *http.Request) *http.Request {
-
 	b, _ := httputil.DumpRequest(request, true)
 	f.updateChan <- Update{Type: NewRequestUpdate, Value: string(b)}
 
@@ -97,6 +108,7 @@ func (f *WebSocketFrontend) InterceptRequest(request *http.Request) *http.Reques
 	return request
 }
 
+// InterceptResponse allows the debugger to view and modify the response
 func (f *WebSocketFrontend) InterceptResponse(response *http.Response) *http.Response {
 	b, _ := httputil.DumpResponse(response, true)
 	f.updateChan <- Update{Type: NewResponseUpdate, Value: string(b)}

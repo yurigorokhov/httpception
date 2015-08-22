@@ -14,7 +14,7 @@ var commandTypes = {
 window.onload = function() {
 
     // listen on websocket
-    var socket = new WebSocket("ws://localhost:8081/_socket");
+    var socket = new WebSocket("ws://" + window.location.host + "/_socket");
     socket.onmessage = function(msg) {
         console.log(msg.data);
         var receivedData = JSON.parse(msg.data);

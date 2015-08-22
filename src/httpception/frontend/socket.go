@@ -8,11 +8,13 @@ import (
 	"golang.org/x/net/websocket"
 )
 
+// WebSocketConn represents a connection with the client
 type WebSocketConn struct {
 	Conn     *websocket.Conn
 	DoneChan chan<- bool
 }
 
+// SocketHandler represents a list of client sockets
 type SocketHandler struct {
 	connLock    *sync.Mutex
 	connections []*WebSocketConn
@@ -20,6 +22,7 @@ type SocketHandler struct {
 	updateChan  <-chan Update
 }
 
+// NewSocketHandler creates a websocket connection handler
 func NewSocketHandler(commandChan chan<- Command, updateChan <-chan Update) *SocketHandler {
 	return &SocketHandler{
 		connLock:    &sync.Mutex{},
@@ -29,6 +32,7 @@ func NewSocketHandler(commandChan chan<- Command, updateChan <-chan Update) *Soc
 	}
 }
 
+// Run starts the socket handler
 func (s *SocketHandler) Run() {
 	for {
 		update := <-s.updateChan
@@ -49,6 +53,7 @@ func (s *SocketHandler) Run() {
 	}
 }
 
+// HandleConn handles on an individual socket connection
 func (s *SocketHandler) HandleConn(ws *websocket.Conn) {
 	defer ws.Close()
 	doneChan := make(chan bool, 1)
