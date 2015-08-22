@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description" content="">
+    <meta name="author" content="">
+    <title>HTTPCeption</title>
+    <link type="text/css" rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap.min.css">
+    <link type="text/css" rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap-theme.min.css">
+      <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script>
+    <script type="text/javascript" src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/js/bootstrap.min.js"></script>
+    <script type="text/javascript" src="//cdnjs.cloudflare.com/ajax/libs/underscore.js/1.8.3/underscore-min.js"></script>
+    <script type="text/javascript" src="//cdnjs.cloudflare.com/ajax/libs/jquery/2.1.4/jquery.min.js"></script>
+    <script type="text/javascript" src="./main.js"></script>
+    <style type="text/css">
+      body {
+          padding-top: 50px;
+      }
+      .starter-template {
+          padding: 40px 15px;
+          text-align: center;
+      }
+    </style>
+
+  </head>
+
+   <body>
+
+     <nav class="navbar navbar-inverse navbar-fixed-top">
+       <div class="container">
+         <div class="navbar-header">
+           <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar" aria-expanded="false" aria-controls="navbar">
+             <span class="sr-only">Toggle navigation</span>
+             <span class="icon-bar"></span>
+             <span class="icon-bar"></span>
+             <span class="icon-bar"></span>
+           </button>
+           <a class="navbar-brand" href="#">Project name</a>
+         </div>
+         <div id="navbar" class="collapse navbar-collapse">
+           <ul class="nav navbar-nav">
+           </ul>
+         </div><!--/.nav-collapse -->
+       </div>
+     </nav>
+
+     <div class="container">
+
+       <div class="starter-template">
+         <h1>Requests</h1>
+         <!--<table class="table">
+           <thead>
+             <tr>
+               <th>Status</th>
+               <th>Url</th>
+            </tr>
+           </thead>
+           <tbody>
+             <tr class="success">
+               <td>John</td>
+               <td>Doe</td>
+               <td>john@example.com</td>
+             </tr>
+             <tr class="danger">
+               <td>Mary</td>
+               <td>Moe</td>
+               <td>mary@example.com</td>
+             </tr>
+             <tr class="info">
+               <td>July</td>
+               <td>Dooley</td>
+               <td>july@example.com</td>
+             </tr>
+           </tbody>
+         </table>-->
+         <p>
+           <button id="debug_start" type="button" class="btn btn-large btn-primary">Debug</button>
+           <button id="debug_continue" type="button" class="btn btn-large btn-success" disabled>Continue</button>
+           <button id="debug_stop" type="button" class="btn btn-large" disabled>Stop Debugging</button>
+         </p>
+         <div class="form-group">
+           <label for="comment">Request</label>
+           <textarea id="request" class="form-control" rows="10" id="comment"></textarea>
+         </div>
+
+         <div class="form-group">
+           <label for="comment">Response</label>
+           <textarea id="response" class="form-control" rows="10" id="comment"></textarea>
+         </div>
+       </div>
+
+     </div><!-- /.container -->
+
+
+   </body>
+</html>
