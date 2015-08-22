@@ -65,7 +65,7 @@ func main() {
 	go frontend.Start()
 
 	// handle incoming connections
-	handler := NewHTTPProxy(connectionChannel, errorChan, frontend.InterceptRequest, frontend.InterceptResponse)
+	handler := NewHTTPProxy(connectionChannel, errorChan, frontend.InterceptRequest, frontend.InterceptResponse, sendAddress)
 	go handler.Start()
 	<-quit
 }

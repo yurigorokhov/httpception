@@ -49,7 +49,7 @@ You should see a trail of requests coming through:
 
 TODO
 ====
-- [ ] Support Host header rewriting
+- [X] Support Host header rewriting
 - [ ] Support modifying requests and responses in the debugger
 - [ ] Support HTTPS
 - [ ] Allow replaying of requests

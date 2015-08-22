@@ -12,6 +12,7 @@ import (
 type HTTPProxy struct {
 	connectionChannel <-chan net.Conn
 	errorChan         chan<- error
+	sendAddress       string
 
 	// interceptors
 	interceptRequest  func(*http.Request) *http.Request
@@ -19,12 +20,18 @@ type HTTPProxy struct {
 }
 
 // NewHTTPProxy creates a new proxy
-func NewHTTPProxy(connectionChannel <-chan net.Conn, errorChan chan<- error, interceptRequest func(*http.Request) *http.Request, interceptResponse func(*http.Response) *http.Response) *HTTPProxy {
+func NewHTTPProxy(
+	connectionChannel <-chan net.Conn,
+	errorChan chan<- error,
+	interceptRequest func(*http.Request) *http.Request,
+	interceptResponse func(*http.Response) *http.Response,
+	sendAddress string) *HTTPProxy {
 	return &HTTPProxy{
 		connectionChannel: connectionChannel,
 		errorChan:         errorChan,
 		interceptRequest:  interceptRequest,
 		interceptResponse: interceptResponse,
+		sendAddress:       sendAddress,
 	}
 }
 
@@ -42,6 +49,9 @@ func (h *HTTPProxy) Start() {
 				h.errorChan <- fmt.Errorf("Failed to parse http request: %s", err)
 			}
 			if req != nil {
+
+				// rewrite the request Host header
+				req = h.rewriteRequest(req)
 
 				// intercept the request
 				req = h.interceptRequest(req)
@@ -69,11 +79,16 @@ func (h *HTTPProxy) Start() {
 func (h *HTTPProxy) forwardRequest(request *http.Request) (*http.Response, error) {
 
 	// forward request
-	conn, err := net.Dial("tcp", sendAddress)
+	conn, err := net.Dial("tcp", h.sendAddress)
 	if err != nil {
-		fmt.Errorf("Failed to dial: %s", sendAddress)
+		fmt.Errorf("Failed to dial: %s", h.sendAddress)
 	}
 	request.Write(conn)
 	reader := bufio.NewReader(conn)
 	return http.ReadResponse(reader, request)
+}
+
+func (h *HTTPProxy) rewriteRequest(request *http.Request) *http.Request {
+	request.Host = h.sendAddress
+	return request
 }
