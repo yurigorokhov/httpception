@@ -24,7 +24,7 @@ Running
 Usage of ./httpception:
   -debug=":9999": Address to listen for debugging connection (ex: :9999)
   -listen="": Address to listen for new connections (ex: localhost:3333)
-  -send="": Address to listen for new connections (ex: localhost:4444)
+  -send="": Address to forward traffic to (ex: www.w3.org:80)
 ```
 
 Example: forward traffic from localhost to http://www.w3.org/
