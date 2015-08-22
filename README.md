@@ -2,7 +2,7 @@
 
 Description
 ===========
-HTTPCeption is a HTTP proxy that allows the interception of HTTP requests and responses for debugging purposes. During normal operation it simply acts as a simple proxy, but once you connect to it over a web interface, you are able to analyze the network traffic step by step.
+HTTPCeption is a HTTP proxy that allows the interception of HTTP requests and responses for debugging purposes. During normal operation it acts as a transparent proxy, but once you connect to it over a web interface, you are able to analyze the network traffic step by step.
 
 Compilation
 ===========
