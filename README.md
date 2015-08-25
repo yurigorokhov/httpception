@@ -54,3 +54,4 @@ TODO
 - [ ] Support HTTPS
 - [ ] Allow replaying of requests
 - [ ] Add ability to save / load requests
+- [ ] Remember requests and be able to navigate them (previous/next)
