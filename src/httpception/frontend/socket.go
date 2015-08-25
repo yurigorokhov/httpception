@@ -16,19 +16,24 @@ type WebSocketConn struct {
 
 // SocketHandler represents a list of client sockets
 type SocketHandler struct {
-	connLock    *sync.Mutex
-	connections []*WebSocketConn
-	commandChan chan<- Command
-	updateChan  <-chan Update
+	connLock          *sync.Mutex
+	connections       []*WebSocketConn
+	commandChan       chan<- Command
+	updateChan        <-chan UpdateInterface
+	newConnectionChan chan<- struct{}
 }
 
 // NewSocketHandler creates a websocket connection handler
-func NewSocketHandler(commandChan chan<- Command, updateChan <-chan Update) *SocketHandler {
+func NewSocketHandler(
+	commandChan chan<- Command,
+	updateChan <-chan UpdateInterface,
+	newConnectionChan chan<- struct{}) *SocketHandler {
 	return &SocketHandler{
-		connLock:    &sync.Mutex{},
-		connections: make([]*WebSocketConn, 0, 1),
-		commandChan: commandChan,
-		updateChan:  updateChan,
+		connLock:          &sync.Mutex{},
+		connections:       make([]*WebSocketConn, 0, 1),
+		commandChan:       commandChan,
+		updateChan:        updateChan,
+		newConnectionChan: newConnectionChan,
 	}
 }
 
@@ -63,6 +68,7 @@ func (s *SocketHandler) HandleConn(ws *websocket.Conn) {
 		DoneChan: doneChan,
 	})
 	s.connLock.Unlock()
+	s.newConnectionChan <- struct{}{}
 
 	// read commands
 forloop:

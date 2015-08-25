@@ -59,7 +59,7 @@ func main() {
 	}()
 
 	// initialize frontend
-	updateChan := make(chan frontend.Update)
+	updateChan := make(chan frontend.UpdateInterface)
 	commandChan := make(chan frontend.Command)
 	frontend := frontend.Frontend(frontend.NewWebSocketFrontend(updateChan, commandChan, debuggingAddress))
 	go frontend.Start()

@@ -1,8 +1,8 @@
 var updateTypes = {
     NewRequest: 0,
     NewResponse: 1,
-    DebuggingEnabled: 2,
-    DebuggingDisabled: 3
+    DebuggingToggle: 2,
+    InitialUpdate: 3
 };
 
 var commandTypes = {
@@ -12,6 +12,19 @@ var commandTypes = {
 };
 
 window.onload = function() {
+    var toggleDebugging = function(enabled) {
+        if(enabled === true) {
+            console.log('debugger has started');
+            $('#debug_stop').prop('disabled', false);
+            $('#debug_continue').prop('disabled', false);
+            $('#debug_start').prop('disabled', true);
+        } else {
+            console.log('debugger has stopped');
+            $('#debug_stop').prop('disabled', true);
+            $('#debug_continue').prop('disabled', true);
+            $('#debug_start').prop('disabled', false);
+        }
+    };
 
     // listen on websocket
     var socket = new WebSocket("ws://" + window.location.host + "/_socket");
@@ -20,24 +33,17 @@ window.onload = function() {
         var receivedData = JSON.parse(msg.data);
         switch(receivedData.Type) {
         case updateTypes.NewRequest:
-            $('#request').text(receivedData.Value);
+            $('#request').text(receivedData.Request);
             $('#response').text('');
             break;
         case updateTypes.NewResponse:
-            $('#response').text(receivedData.Value);
+            $('#response').text(receivedData.Response);
             break;
-        case updateTypes.DebuggingEnabled:
-            console.log('debugger has started');
-            $('#debug_stop').prop('disabled', false);
-            $('#debug_continue').prop('disabled', false);
-            $('#debug_start').prop('disabled', true);
+        case updateTypes.DebuggingToggle:
+            toggleDebugging(receivedData.DebuggingEnabled);
             break;
-        case updateTypes.DebuggingDisabled:
-            console.log('debugger has stopped');
-            $('#debug_stop').prop('disabled', true);
-            $('#debug_continue').prop('disabled', true);
-            $('#debug_start').prop('disabled', false);
-            break;
+        case updateTypes.InitialUpdate:
+            toggleDebugging(receivedData.DebuggingEnabled);
         default:
             console.log('Unknown update type: ' + receivedData.Type);
         }

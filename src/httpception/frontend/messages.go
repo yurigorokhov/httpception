@@ -15,10 +15,12 @@ const (
 	ContinueCommand = iota
 )
 
-// Command is the command message
+// CommandInterface is the interface for commands received from the user interface
+type CommandInterface interface{}
+
+// Command represents a command from the client
 type Command struct {
-	Type  CommandType
-	Value string
+	Type CommandType
 }
 
 // UpdateType is the type of update message for the frontend
@@ -26,21 +28,78 @@ type UpdateType uint
 
 const (
 
-	// NewRequestUpdate sends a new request to the client
-	NewRequestUpdate UpdateType = iota
+	// RequestUpdate sends a new request to the client
+	RequestUpdate UpdateType = iota
 
-	// NewResponseUpdate sends a new request to the client
-	NewResponseUpdate = iota
+	// ResponseUpdate sends a new request to the client
+	ResponseUpdate = iota
 
-	// DebuggingEnabledUpdate tells the client that debugging was turned on
-	DebuggingEnabledUpdate = iota
+	// DebuggingToggleUpdate tells the client that debugging was turned on/off
+	DebuggingToggleUpdate = iota
 
-	// DebuggingDisabledUpdate tells the client that debugging was turned off
-	DebuggingDisabledUpdate = iota
+	// InitialUpdate tells a newly joined client everything he needs to know
+	InitialUpdate = iota
 )
 
-// Update represents an update message to the client
-type Update struct {
-	Type  UpdateType
-	Value string
+// UpdateInterface represents an update message
+type UpdateInterface interface{}
+
+// InitialUpdateMessage is sent to the client upon initial connection
+type InitialUpdateMessage struct {
+	Type             UpdateType
+	DebuggingEnabled bool
+}
+
+// NewInitialUpdateMessage creates a new update message
+func NewInitialUpdateMessage(debuggingEnabled bool) InitialUpdateMessage {
+	return InitialUpdateMessage{
+		Type:             InitialUpdate,
+		DebuggingEnabled: debuggingEnabled,
+	}
+}
+
+// RequestUpdateMessage represents a new request update
+type RequestUpdateMessage struct {
+	Type UpdateType
+
+	//TODO: decompose this
+	Request string
+}
+
+// NewRequestUpdateMessage creates a new update
+func NewRequestUpdateMessage(request string) RequestUpdateMessage {
+	return RequestUpdateMessage{
+		Type:    RequestUpdate,
+		Request: request,
+	}
+}
+
+// ResponseUpdateMessage represents a new request update
+type ResponseUpdateMessage struct {
+	Type UpdateType
+
+	//TODO: decompose this
+	Response string
+}
+
+// NewResponseUpdateMessage creates a new update
+func NewResponseUpdateMessage(response string) ResponseUpdateMessage {
+	return ResponseUpdateMessage{
+		Type:     ResponseUpdate,
+		Response: response,
+	}
+}
+
+// DebuggingToggleMessage tells the client that debugging was turned on/off
+type DebuggingToggleMessage struct {
+	Type             UpdateType
+	DebuggingEnabled bool
+}
+
+// NewDebuggingToggleMessage creates a new DebuggingToggleMessage
+func NewDebuggingToggleMessage(debuggingEnabled bool) DebuggingToggleMessage {
+	return DebuggingToggleMessage{
+		Type:             DebuggingToggleUpdate,
+		DebuggingEnabled: debuggingEnabled,
+	}
 }

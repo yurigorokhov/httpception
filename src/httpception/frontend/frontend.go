@@ -18,7 +18,7 @@ type Frontend interface {
 
 // WebSocketFrontend represents the main web interface
 type WebSocketFrontend struct {
-	updateChan       chan Update
+	updateChan       chan UpdateInterface
 	commandChan      chan Command
 	debuggingAddress string
 
@@ -30,7 +30,7 @@ type WebSocketFrontend struct {
 
 // NewWebSocketFrontend creates a new WebSocketFrontend
 func NewWebSocketFrontend(
-	updateChan chan Update,
+	updateChan chan UpdateInterface,
 	commandChan chan Command,
 	debuggingAddress string) *WebSocketFrontend {
 	return &WebSocketFrontend{
@@ -47,7 +47,8 @@ func NewWebSocketFrontend(
 func (f *WebSocketFrontend) Start() {
 
 	// handle
-	socketHandler := NewSocketHandler(f.commandChan, f.updateChan)
+	newConnectionChan := make(chan struct{})
+	socketHandler := NewSocketHandler(f.commandChan, f.updateChan, newConnectionChan)
 	go socketHandler.Run()
 
 	// listen for commands
@@ -68,7 +69,7 @@ func (f *WebSocketFrontend) Start() {
 					f.settingsMutex.Lock()
 					f.debuggingEnabled = true
 					f.settingsMutex.Unlock()
-					f.updateChan <- Update{Type: DebuggingEnabledUpdate, Value: ""}
+					f.updateChan <- NewDebuggingToggleMessage(true)
 				case DisableDebuggingCommand:
 					f.settingsMutex.Lock()
 					f.debuggingEnabled = false
@@ -77,8 +78,12 @@ func (f *WebSocketFrontend) Start() {
 						f.isPaused = false
 					}
 					f.settingsMutex.Unlock()
-					f.updateChan <- Update{Type: DebuggingDisabledUpdate, Value: ""}
+					f.updateChan <- NewDebuggingToggleMessage(false)
 				}
+			case <-newConnectionChan:
+				f.settingsMutex.Lock()
+				f.updateChan <- NewInitialUpdateMessage(f.debuggingEnabled)
+				f.settingsMutex.Unlock()
 			}
 		}
 	}()
@@ -93,7 +98,7 @@ func (f *WebSocketFrontend) Start() {
 // InterceptRequest allows the debugger to view and modify the request
 func (f *WebSocketFrontend) InterceptRequest(request *http.Request) *http.Request {
 	b, _ := httputil.DumpRequest(request, true)
-	f.updateChan <- Update{Type: NewRequestUpdate, Value: string(b)}
+	f.updateChan <- NewRequestUpdateMessage(string(b))
 
 	// only wait for debugger command if debugging is turned on
 	if f.debuggingEnabled {
@@ -111,7 +116,7 @@ func (f *WebSocketFrontend) InterceptRequest(request *http.Request) *http.Reques
 // InterceptResponse allows the debugger to view and modify the response
 func (f *WebSocketFrontend) InterceptResponse(response *http.Response) *http.Response {
 	b, _ := httputil.DumpResponse(response, true)
-	f.updateChan <- Update{Type: NewResponseUpdate, Value: string(b)}
+	f.updateChan <- NewResponseUpdateMessage(string(b))
 
 	// only wait for debugger command if debugging is turned on
 	if f.debuggingEnabled {
