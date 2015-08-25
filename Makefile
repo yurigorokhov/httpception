@@ -1,4 +1,4 @@
-GO ?= godep go
+GO ?= go
 GOPATH := $(CURDIR):$(CURDIR)/Godeps/_workspace:$(GOPATH)
 
 all: build
