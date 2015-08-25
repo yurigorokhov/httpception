@@ -1,4 +1,5 @@
 #HTTPCeption
+[![Build Status](https://travis-ci.org/yurigorokhov/httpception.svg)](https://travis-ci.org/yurigorokhov/httpception)
 
 Description
 ===========
