@@ -8,10 +8,10 @@
     <title>HTTPCeption</title>
     <link type="text/css" rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap.min.css">
     <link type="text/css" rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap-theme.min.css">
-      <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script>
-    <script type="text/javascript" src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/js/bootstrap.min.js"></script>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script>
     <script type="text/javascript" src="//cdnjs.cloudflare.com/ajax/libs/underscore.js/1.8.3/underscore-min.js"></script>
     <script type="text/javascript" src="//cdnjs.cloudflare.com/ajax/libs/jquery/2.1.4/jquery.min.js"></script>
+    <script type="text/javascript" src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/js/bootstrap.min.js"></script>
     <script type="text/javascript" src="./main.js"></script>
     <style type="text/css">
       body {
@@ -26,6 +26,33 @@
   </head>
 
    <body>
+
+
+<!-- Modal -->
+<div class="modal fade" id="view_request_modal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+        <h4 class="modal-title" id="myModalLabel">Request</h4>
+      </div>
+      <div class="modal-body">
+       <div class="form-group">
+             <label for="view_request">Request</label>
+             <textarea id="view_request" class="form-control" rows="10"></textarea>
+        </div>
+        <div class="form-group">
+             <label for="view_response">Response</label>
+             <textarea id="view_response" class="form-control" rows="10"></textarea>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+      </div>
+    </div>
+  </div>
+</div>
+
 
      <nav class="navbar navbar-inverse navbar-fixed-top">
        <div class="container">
@@ -47,6 +74,7 @@
 
      <div class="container">
 
+
        <div class="starter-template">
          <h1>Requests</h1>
          <p>
@@ -54,14 +82,21 @@
            <button id="debug_continue" type="button" class="btn btn-large btn-success" disabled>Continue</button>
            <button id="debug_stop" type="button" class="btn btn-large" disabled>Stop Debugging</button>
          </p>
-         <div class="form-group">
-           <label for="comment">Request</label>
-           <textarea id="request" class="form-control" rows="10" id="comment"></textarea>
+
+         <div id="request_listing_interface">
+           <div id="request_listing" class="list-group"></div>
          </div>
 
-         <div class="form-group">
-           <label for="comment">Response</label>
-           <textarea id="response" class="form-control" rows="10" id="comment"></textarea>
+         <div id="debug_interface" style="display: none;">
+           <div class="form-group">
+             <label for="request">Request</label>
+             <textarea id="request" class="form-control" rows="10"></textarea>
+           </div>
+
+           <div class="form-group">
+             <label for="response">Response</label>
+             <textarea id="response" class="form-control" rows="10"></textarea>
+           </div>
          </div>
        </div>
 

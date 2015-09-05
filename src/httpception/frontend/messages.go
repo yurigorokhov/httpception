@@ -63,14 +63,18 @@ type RequestUpdateMessage struct {
 	Type UpdateType
 
 	//TODO: decompose this
-	Request string
+	Request    string
+	RequestURI string
+	Host       string
 }
 
 // NewRequestUpdateMessage creates a new update
-func NewRequestUpdateMessage(request string) RequestUpdateMessage {
+func NewRequestUpdateMessage(request string, host string, requestURI string) RequestUpdateMessage {
 	return RequestUpdateMessage{
-		Type:    RequestUpdate,
-		Request: request,
+		Type:       RequestUpdate,
+		Request:    request,
+		RequestURI: requestURI,
+		Host:       host,
 	}
 }
 

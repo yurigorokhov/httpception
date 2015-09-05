@@ -98,7 +98,7 @@ func (f *WebSocketFrontend) Start() {
 // InterceptRequest allows the debugger to view and modify the request
 func (f *WebSocketFrontend) InterceptRequest(request *http.Request) *http.Request {
 	b, _ := httputil.DumpRequest(request, true)
-	f.updateChan <- NewRequestUpdateMessage(string(b))
+	f.updateChan <- NewRequestUpdateMessage(string(b), request.Host, request.RequestURI)
 
 	// only wait for debugger command if debugging is turned on
 	if f.debuggingEnabled {
